@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | UNDERGOLD</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body class="admin-page">
+  <div class="admin-shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span>UNDERGOLD</span>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="#categories" class="nav-link">Categorías</a>
+        <a href="#products" class="nav-link">Productos</a>
+        <a href="#orders" class="nav-link">Pedidos</a>
+      </nav>
+      <button id="logoutButton" class="btn btn-secondary sidebar-logout">Cerrar sesión</button>
+    </aside>
+
+    <main class="admin-main">
+      <header class="dashboard-header">
+        <div>
+          <p class="dashboard-kicker">Panel de control</p>
+          <h1>Bienvenido, administrador.</h1>
+          <p class="dashboard-description">Gestiona categorías, productos y pedidos desde un espacio moderno, limpio y seguro.</p>
+        </div>
+        <div class="dashboard-header-meta">
+          <span class="status-pill">Conectado</span>
+          <p id="lastSessionText">Última sesión: cargando...</p>
+        </div>
+      </header>
+
+      <section class="dashboard-cards" id="dashboardCards">
+        <article class="dashboard-card">
+          <p class="card-label">Productos</p>
+          <h2 id="productCount">0</h2>
+          <p class="card-note">Total de productos registrados.</p>
+        </article>
+        <article class="dashboard-card">
+          <p class="card-label">Categorías</p>
+          <h2 id="categoryCount">0</h2>
+          <p class="card-note">Categorías disponibles en la tienda.</p>
+        </article>
+        <article class="dashboard-card">
+          <p class="card-label">Pedidos</p>
+          <h2 id="orderCount">0</h2>
+          <p class="card-note">Pedidos guardados en el sistema.</p>
+        </article>
+      </section>
+
+      <section class="dashboard-section" id="categories">
+        <div class="section-card">
+          <div class="categories-toolbar">
+            <div>
+              <p class="section-title">Gestión de categorías</p>
+              <p class="section-text">Administra los grupos de productos disponibles en la tienda.</p>
+            </div>
+            <button id="addCategoryButton" class="btn btn-primary">Nueva categoría</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Descripción</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="categoryTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <modal-dialog id="categoryModal">
+        <div id="categoryModalContent"></div>
+      </modal-dialog>
+
+      <section class="dashboard-section" id="products">
+        <div class="section-card">
+          <div class="categories-toolbar">
+            <div>
+              <p class="section-title">Gestión de productos</p>
+              <p class="section-text">Crea, edita y elimina artículos del catálogo público.</p>
+            </div>
+            <button id="addProductButton" class="btn btn-primary">Nuevo producto</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Código</th>
+                  <th>Nombre</th>
+                  <th>Categoría</th>
+                  <th>Precio</th>
+                  <th>Imagen</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <modal-dialog id="productModal">
+        <div id="productModalContent"></div>
+      </modal-dialog>
+
+      <section class="dashboard-section" id="orders">
+        <div class="section-card">
+          <div class="section-card-top">
+            <p class="section-title">Pedidos</p>
+            <span class="status-pill small">Activo</span>
+          </div>
+          <p class="section-text">Revisa los pedidos confirmados desde el checkout del ecommerce.</p>
+          <div class="table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>ID pedido</th>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Teléfono</th>
+                  <th>Dirección</th>
+                  <th>Total</th>
+                  <th>Productos</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="orderTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <modal-dialog id="orderModal">
+        <div id="orderModalContent"></div>
+      </modal-dialog>
+
+      <section class="dashboard-section">
+        <div class="section-card">
+          <div class="section-card-top">
+            <p class="section-title">Visión general</p>
+            <span class="status-pill small">Premium</span>
+          </div>
+          <p class="section-text">Sistema de administración completo con CRUD de categorías, productos y visualización de pedidos.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="components/modal-dialog.js"></script>
+  <script type="module" src="js/categories.js"></script>
+  <script type="module" src="js/products-admin.js"></script>
+  <script type="module" src="js/orders-admin.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>
