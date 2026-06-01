@@ -93,8 +93,9 @@ template.innerHTML = `
   <div class="navbar">
     <div class="logo">UNDERGOLD</div>
     <nav>
-      <a class="nav-link" href="#">Inicio</a>
+      <a class="nav-link" href="index.html">Inicio</a>
       <a class="nav-link" href="#productos">Productos</a>
+      <a class="nav-link" href="history.html">Historial</a>
       <a class="nav-link" href="dashboard.html">Admin</a>
     </nav>
     <button class="cart-button" type="button">

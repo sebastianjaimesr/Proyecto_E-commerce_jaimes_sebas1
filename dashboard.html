@@ -121,6 +121,9 @@
             <span class="status-pill small">Activo</span>
           </div>
           <p class="section-text">Revisa los pedidos confirmados desde el checkout del ecommerce.</p>
+          <div class="table-actions-row">
+            <button id="exportOrdersButton" class="btn btn-secondary">Exportar CSV</button>
+          </div>
           <div class="table-wrapper">
             <table class="dashboard-table">
               <thead>
@@ -143,6 +146,10 @@
 
       <modal-dialog id="orderModal">
         <div id="orderModalContent"></div>
+      </modal-dialog>
+
+      <modal-dialog id="confirmModal">
+        <div id="confirmModalContent"></div>
       </modal-dialog>
 
       <section class="dashboard-section">

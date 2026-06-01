@@ -11,6 +11,10 @@ const STORAGE_KEYS = {
   categories: 'undergold_categories',
   orders: 'undergold_orders',
   products: 'undergold_products',
+  favorites: 'undergold_favorites',
+  theme: 'undergold_theme',
+  itemsPerPage: 'undergold_items_per_page',
+  orderNumber: 'undergold_order_counter',
 };
 
 /**
@@ -108,4 +112,115 @@ export function getCart() {
 /** Reemplaza el carrito completo en localStorage con el nuevo arreglo. */
 export function setCart(cart) {
   saveToStorage(STORAGE_KEYS.cart, cart);
+}
+
+// ============== FUNCIONES PARA FAVORITOS ==============
+
+/**
+ * Carga los IDs de productos marcados como favoritos.
+ * @returns {Array} Arreglo de IDs de productos favoritos.
+ */
+export function loadFavorites() {
+  return loadFromStorage(STORAGE_KEYS.favorites);
+}
+
+/**
+ * Guarda los IDs de productos favoritos en localStorage.
+ * @param {Array} favorites - Arreglo con IDs de productos favoritos.
+ */
+export function saveFavorites(favorites) {
+  saveToStorage(STORAGE_KEYS.favorites, favorites);
+}
+
+/**
+ * Verifica si un producto está en favoritos.
+ * @param {string} productId - ID del producto.
+ * @returns {boolean}
+ */
+export function isFavorite(productId) {
+  const favorites = loadFavorites();
+  return favorites.includes(productId);
+}
+
+/**
+ * Agrega un producto a favoritos si no está,
+ * o lo elimina si ya está (comportamiento toggle).
+ * @param {string} productId - ID del producto.
+ * @returns {boolean} true si se agregó, false si se eliminó.
+ */
+export function toggleFavorite(productId) {
+  const favorites = loadFavorites();
+  const index = favorites.indexOf(productId);
+  if (index > -1) {
+    favorites.splice(index, 1);
+    saveFavorites(favorites);
+    return false;
+  } else {
+    favorites.push(productId);
+    saveFavorites(favorites);
+    return true;
+  }
+}
+
+// ============== FUNCIONES PARA TEMA (DARK MODE) ==============
+
+/**
+ * Carga el tema preferido del usuario ('light' o 'dark').
+ * @returns {string} 'light' por defecto.
+ */
+export function loadTheme() {
+  const saved = localStorage.getItem(STORAGE_KEYS.theme);
+  return saved || 'light';
+}
+
+/**
+ * Guarda la preferencia de tema del usuario.
+ * @param {string} theme - 'light' o 'dark'.
+ */
+export function saveTheme(theme) {
+  localStorage.setItem(STORAGE_KEYS.theme, theme);
+}
+
+/**
+ * Alterna entre tema claro y oscuro.
+ * @returns {string} El nuevo tema activo.
+ */
+export function toggleTheme() {
+  const current = loadTheme();
+  const newTheme = current === 'light' ? 'dark' : 'light';
+  saveTheme(newTheme);
+  return newTheme;
+}
+
+// ============== FUNCIONES PARA PAGINACIÓN ==============
+
+/**
+ * Carga la cantidad de items por página.
+ * @returns {number} 6 por defecto.
+ */
+export function loadItemsPerPage() {
+  const saved = localStorage.getItem(STORAGE_KEYS.itemsPerPage);
+  return saved ? parseInt(saved, 10) : 6;
+}
+
+/**
+ * Guarda la cantidad de items por página.
+ * @param {number} count - Cantidad de items por página.
+ */
+export function saveItemsPerPage(count) {
+  localStorage.setItem(STORAGE_KEYS.itemsPerPage, count.toString());
+}
+
+// ============== FUNCIONES PARA NÚMERO DE PEDIDO ==============
+
+/**
+ * Genera un número de pedido automático con formato: PED-AAAA-0001
+ * @returns {string} Ej: "PED-2026-0001"
+ */
+export function generateOrderNumber() {
+  let counter = parseInt(localStorage.getItem(STORAGE_KEYS.orderNumber) || '0', 10);
+  counter += 1;
+  localStorage.setItem(STORAGE_KEYS.orderNumber, counter.toString());
+  const year = new Date().getFullYear();
+  return `PED-${year}-${String(counter).padStart(4, '0')}`;
 }

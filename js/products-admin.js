@@ -14,6 +14,7 @@
 
 import { loadCategories, loadProducts, saveProducts } from './storage.js';
 import { categories as defaultCategories, products as defaultProducts } from './products.js';
+import { confirmDeletion } from './ui.js';
 
 const productTableBody    = document.getElementById('productTableBody');
 const addProductButton    = document.getElementById('addProductButton');
@@ -245,8 +246,7 @@ function handleSubmit(existing) {
 
 /**
  * Maneja los clics en los botones de acción de la tabla.
- * Para eliminar, muestra una confirmación inline en la fila
- * con botones "Sí" y "No" para evitar eliminaciones accidentales.
+ * Para eliminar, abre un modal de confirmación.
  * @param {Event} e
  */
 function handleTableClick(e) {
@@ -262,22 +262,12 @@ function handleTableClick(e) {
   }
 
   if (action === 'delete' && product) {
-    const row = productTableBody.querySelector(`tr[data-id="${id}"]`);
-    if (row.querySelector('.confirm-delete')) return;
-    row.querySelector('.td-actions').innerHTML = `
-      <span class="confirm-delete">¿Eliminar <strong>${product.name}</strong>?</span>
-      <button class="table-action danger" data-action="confirm-delete" data-id="${id}">Sí</button>
-      <button class="table-action" data-action="cancel-delete" data-id="${id}">No</button>
-    `;
-  }
-
-  if (action === 'confirm-delete') {
-    saveProducts(getProducts().filter((p) => p.id !== id));
-    renderProducts();
-  }
-
-  if (action === 'cancel-delete') {
-    renderProducts(); // Restaura los botones originales.
+    confirmDeletion(`¿Deseas eliminar el producto "${product.name}"?`).then((confirmed) => {
+      if (confirmed) {
+        saveProducts(getProducts().filter((p) => p.id !== id));
+        renderProducts();
+      }
+    });
   }
 }
 

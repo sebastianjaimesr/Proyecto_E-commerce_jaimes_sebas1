@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial de Compras | UNDERGOLD</title>
+  <link rel="stylesheet" href="styles/global.css">
+  <link rel="stylesheet" href="styles/ecommerce.css">
+</head>
+<body>
+  <premium-navbar></premium-navbar>
+
+  <main class="page-shell">
+    <section class="section-header">
+      <div>
+        <p class="section-kicker">Tu historial</p>
+        <h1>Pedidos realizados</h1>
+      </div>
+    </section>
+
+    <section class="cart-shell">
+      <div class="history-container" id="historyContainer"></div>
+    </section>
+  </main>
+
+  <modal-dialog id="historyDetailModal">
+    <div id="historyDetailContent"></div>
+  </modal-dialog>
+
+  <script type="module" src="components/navbar.js"></script>
+  <script type="module" src="components/modal-dialog.js"></script>
+  <script type="module" src="js/history.js"></script>
+</body>
+</html>

@@ -186,11 +186,78 @@ function handleTableClick(event) {
 }
 
 /**
+ * Exporta todos los pedidos a formato CSV descargable.
+ * Genera un archivo con encabezados y datos tabulados.
+ * Descarga automáticamente con nombre: pedidos-AAAA-MM-DD.csv
+ */
+export function exportOrdersToCSV() {
+  const orders = loadOrders();
+  if (!orders.length) {
+    alert('No hay pedidos para exportar.');
+    return;
+  }
+
+  // Encabezados del CSV
+  const headers = [
+    'ID Pedido',
+    'Fecha',
+    'Cliente',
+    'Identificación',
+    'Teléfono',
+    'Dirección',
+    'Email',
+    'Productos (cantidad)',
+    'Subtotal',
+    'Envío',
+    'Total',
+  ];
+
+  // Convierte cada pedido a una fila CSV
+  const rows = orders.map((order) => {
+    const items = getOrderItems(order);
+    const itemsText = items.map((i) => `${i.name} (x${i.quantity})`).join('; ');
+    return [
+      order.idPedido || order.id || '',
+      getOrderDate(order),
+      getClientName(order),
+      getClientId(order),
+      getClientPhone(order),
+      getClientAddress(order),
+      getClientEmail(order),
+      itemsText,
+      formatPrice(order.subtotal ?? order.total ?? 0).substring(1),
+      formatPrice(order.envio ?? 0).substring(1),
+      formatPrice(order.total ?? 0).substring(1),
+    ];
+  });
+
+  // Construye el contenido CSV (escapando comillas)
+  const csvContent = [
+    headers.map((h) => `"${h}"`).join(','),
+    ...rows.map((r) => r.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')),
+  ].join('\n');
+
+  // Crea un blob y descarga
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  const today = new Date().toISOString().split('T')[0]; // AAAA-MM-DD
+  link.setAttribute('href', url);
+  link.setAttribute('download', `pedidos-${today}.csv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+/**
  * Inicializa el módulo de pedidos.
- * Conecta el delegado de eventos de la tabla y renderiza los pedidos.
+ * Conecta el delegado de eventos de la tabla, el botón exportar y renderiza los pedidos.
  * Llamado desde dashboard.js al cargar el panel.
  */
 export function initOrdersModule() {
   orderTableBody.addEventListener('click', handleTableClick);
+  const exportBtn = document.getElementById('exportOrdersButton');
+  if (exportBtn) exportBtn.addEventListener('click', exportOrdersToCSV);
   renderOrders();
 }

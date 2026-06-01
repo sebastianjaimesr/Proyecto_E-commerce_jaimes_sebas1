@@ -79,12 +79,40 @@
             <option value="all">Todas las categorías</option>
           </select>
         </div>
+        <div class="search-field">
+          <label for="sortSelect">Ordenar por</label>
+          <select id="sortSelect">
+            <option value="">Sin ordenamiento</option>
+            <option value="price-asc">Precio: menor a mayor</option>
+            <option value="price-desc">Precio: mayor a menor</option>
+            <option value="name-asc">Nombre: A-Z</option>
+            <option value="name-desc">Nombre: Z-A</option>
+          </select>
+        </div>
+        <div class="search-field">
+          <label for="priceRangeSelect">Rango de precio</label>
+          <select id="priceRangeSelect">
+            <option value="">Todos los precios</option>
+            <option value="0-50">$0 - $50</option>
+            <option value="50-100">$50 - $100</option>
+            <option value="100-200">$100 - $200</option>
+            <option value="200-999">$200+</option>
+          </select>
+        </div>
       </div>
+    </section>
+
+    <section class="products-section" id="featuredSection" style="display:none">
+      <div class="section-header">
+        <h2>✨ Productos Destacados</h2>
+        <p>Descubre nuestras selecciones exclusivas.</p>
+      </div>
+      <div class="product-grid" id="featuredGrid"></div>
     </section>
 
     <section class="products-section">
       <div class="section-header">
-        <h2>Productos destacados</h2>
+        <h2>Productos</h2>
         <p>Selecciona tu próximo look premium con diseño sobrio y sensación urbana.</p>
       </div>
       <div class="product-grid" id="productGrid"></div>

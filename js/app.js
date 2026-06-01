@@ -6,17 +6,22 @@
  *  - Poblar el select de categorías con los datos de localStorage.
  *  - Conectar las tarjetas de categorías para que actúen como filtros.
  *  - Aplicar filtros de búsqueda por texto y por categoría.
+ *  - Aplicar ordenamiento de productos (precio, nombre).
  *  - Mostrar el conteo real de productos por categoría en las cards.
  *  - Renderizar la grilla de productos al cargar la página.
  */
 
 import { categories as defaultCategories, products as defaultProducts } from './products.js';
-import { filterProducts, renderProducts, updateCartBadge } from './ui.js';
+import { filterProducts, filterByPriceRange, sortProducts, renderProducts, updateCartBadge } from './ui.js';
 import { loadCategories, loadProducts } from './storage.js';
 
 const productGrid = document.getElementById('productGrid');
+const featuredGrid = document.getElementById('featuredGrid');
+const featuredSection = document.getElementById('featuredSection');
 const searchInput = document.getElementById('searchInput');
 const categorySelect = document.getElementById('categorySelect');
+const sortSelect = document.getElementById('sortSelect');
+const priceRangeSelect = document.getElementById('priceRangeSelect');
 
 /** Retorna los productos guardados en localStorage o los productos por defecto. */
 function getProducts() {
@@ -50,15 +55,25 @@ function setActiveCategoryCard(id) {
 }
 
 /**
- * Lee los valores actuales del buscador y del select de categoría,
- * filtra los productos y los renderiza en la grilla.
+ * Lee los valores actuales del buscador, categoría, precio y ordenamiento,
+ * filtra y ordena los productos, y los renderiza en la grilla.
  * También actualiza la card activa y hace scroll suave a la sección
  * de productos cuando se selecciona una categoría específica.
  */
 function applyFilters() {
   const query = searchInput.value;
   const category = categorySelect.value;
-  renderProducts(filterProducts(getProducts(), query, category), productGrid);
+  const sortBy = sortSelect.value;
+  const priceRange = priceRangeSelect.value;
+  
+  let products = filterProducts(getProducts(), query, category);
+  products = filterByPriceRange(products, priceRange);
+  
+  if (sortBy) {
+    products = sortProducts(products, sortBy);
+  }
+  
+  renderProducts(products, productGrid);
   setActiveCategoryCard(category);
   if (category !== 'all') {
     document.getElementById('productos')?.scrollIntoView({ behavior: 'smooth' });
@@ -97,13 +112,30 @@ function updateCategoryCounts() {
   });
 }
 
+/**
+ * Renderiza los productos marcados como destacados en una sección especial.
+ * Si hay productos destacados, muestra la sección; si no, la oculta.
+ */
+function renderFeaturedProducts() {
+  const featured = getProducts().filter((p) => p.destacado === true);
+  if (featured.length) {
+    featuredSection.style.display = 'block';
+    renderProducts(featured, featuredGrid);
+  } else {
+    featuredSection.style.display = 'none';
+  }
+}
+
 /** Inicializa todos los módulos de la página principal. */
 function init() {
   populateCategoryOptions();
   searchInput.addEventListener('input', applyFilters);
   categorySelect.addEventListener('change', applyFilters);
+  sortSelect.addEventListener('change', applyFilters);
+  priceRangeSelect.addEventListener('change', applyFilters);
   setupCategoryCards();
   updateCategoryCounts();
+  renderFeaturedProducts();
   renderProducts(getProducts(), productGrid);
   updateCartBadge();
 }

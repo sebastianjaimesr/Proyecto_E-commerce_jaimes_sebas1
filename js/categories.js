@@ -13,6 +13,7 @@
 
 import { loadCategories, saveCategories } from './storage.js';
 import { categories as defaultCategories } from './products.js';
+import { confirmDeletion } from './ui.js';
 
 const categoryTableBody = document.getElementById('categoryTableBody');
 const addCategoryButton = document.getElementById('addCategoryButton');
@@ -155,8 +156,7 @@ function handleSubmit(existing) {
 
 /**
  * Maneja los clics en los botones de acción de la tabla (editar, eliminar).
- * Para eliminar, reemplaza los botones de la fila con una confirmación inline
- * que evita eliminar accidentalmente sin usar window.confirm.
+ * Para eliminar, abre un modal de confirmación.
  * @param {Event} e
  */
 function handleTableClick(e) {
@@ -173,23 +173,12 @@ function handleTableClick(e) {
   }
 
   if (action === 'delete') {
-    // Reemplaza los botones de la fila con la confirmación inline.
-    const row = categoryTableBody.querySelector(`tr[data-id="${id}"]`);
-    if (row.querySelector('.confirm-delete')) return; // Ya está mostrando la confirmación.
-    row.querySelector('.td-actions').innerHTML = `
-      <span class="confirm-delete">¿Eliminar <strong>${cat.name}</strong>?</span>
-      <button class="table-action danger" data-action="confirm-delete" data-id="${id}">Sí, eliminar</button>
-      <button class="table-action" data-action="cancel-delete" data-id="${id}">Cancelar</button>
-    `;
-  }
-
-  if (action === 'confirm-delete') {
-    persist(getCategories().filter((c) => c.id !== id));
-    renderCategories();
-  }
-
-  if (action === 'cancel-delete') {
-    renderCategories(); // Restaura los botones originales.
+    confirmDeletion(`¿Deseas eliminar la categoría "${cat.name}"?`).then((confirmed) => {
+      if (confirmed) {
+        persist(getCategories().filter((c) => c.id !== id));
+        renderCategories();
+      }
+    });
   }
 }
 
